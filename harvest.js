@@ -993,6 +993,7 @@ RDFaProcessor.prototype.process = function(node,options) {
                   } else {
                      this.addTriple(current,newSubject,predicate,{ type: datatype ? datatype : RDFaProcessor.PlainLiteralURI, value: content, language: language});
                      //console.log(newSubject+" "+predicate+"="+content);
+                     console.log(content);
                   }
                }
             }
@@ -1515,6 +1516,7 @@ RDFaPredicate.prototype.toString = function(options) {
 document.greenTurtleInvoked = false;
 
 function getTransferSubject(subjects,subject) {
+   
    var jsonObject = '';
    var xhr = new XMLHttpRequest(); 
    var myObjects = new Array(); 

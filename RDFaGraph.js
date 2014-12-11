@@ -147,7 +147,6 @@ RDFaSubject.prototype.toObject = function() {
       }
    }
    return o;
-   
 }
 
 RDFaSubject.prototype.getValues = function() {

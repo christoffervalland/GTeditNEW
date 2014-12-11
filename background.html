@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Triple Viewer</title>
+  <link rel="stylesheet" type="text/css" href="viewer.css"/>
+
+  <script type="text/javascript" src="Thirdparty/jQuery/jquery-2.1.1.js"></script>
+  <script type="text/javascript" src="background.js">//</script>
+  <script type="text/javascript" src="RDFaGraph.js">//</script>
+  <script type="text/javascript" src="harvest.js">//</script>
+  <script type="text/javascript" src="Thirdparty/jStorage/jstorage.js">//</script>
+  <script type="text/javascript" src="viewer.js">//</script>
+</head>
+<body>
+  <div id="container">
+    <div id="no-graphviz">
+      <p>There were too many triples harvested from this document to render.</p>
+    </div>
+    <p id="status"><span id="wait">Waiting for triples from document...</span><button id="stop">Stop</button></p>   
+    <div id="inspector">
+      <div id="table">
+        <table>
+          <thead>
+            <tr><th>Subject</th><th>Predicate</th><th>Object</th></tr>
+          </thead>
+          <tbody id="triples"></tbody> 
+        </table>
+        <table>
+          <thead>
+            <tr><th>Prefix</th><th>URI</th></tr>
+          </thead>
+          <tbody id="prefixes"></tbody>
+        </table>
+      </div>
+    </div>
+    <button id="getStorage">Get info from Chrome Storage</button>
+    <table>
+      <thead>
+        <tr>Chrome Storage</tr>
+      </thead>
+      <tbody id="storageOutput"></tbody>
+    </table>
+    <button id="getUrl">Get url from chrome storage</button>
+    <table>
+      <thead>
+        <tr>Chrome Storage URLs</tr>
+      </thead>
+      <tbody id="urlOutput"></tbody>
+    </table>
+  </div>
+</body>
+<script type="text/javascript" src="testScript.js"></script>
+</html>

@@ -1,7 +1,7 @@
 try {
   var urlList = [];
   var jsonUrl = '';
-  chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+  chrome.tabs.onUpdated.addListener(function(request, changeInfo, tab) {
     if(changeInfo.url == "chrome://newtab/") {
 
     }
@@ -18,10 +18,18 @@ try {
           // callback body
       }); 
     }
+
+    //console.log(sender.tab ? "from a content script: " + sender.tab.id+", "+sender.tab.url : "from the extension" );
+     if (request.harvestedTriples) {
+         chrome.pageAction.show(sender.tab.id);
+         sendResponse({});
+     }  else {
+        sendResponse({}); // snub them.
+     }
+
   });
 
   chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-
      //console.log(sender.tab ? "from a content script: " + sender.tab.id+", "+sender.tab.url : "from the extension" );
      if (request.harvestedTriples) {
          chrome.pageAction.show(sender.tab.id);
@@ -30,7 +38,6 @@ try {
         sendResponse({}); // snub them.
      }
   });
-  
 
   //This happens ONBUTTON CLICK!!!!!!!!!!!!
 
