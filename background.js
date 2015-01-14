@@ -7,12 +7,18 @@ try {
     }
 
     else if (changeInfo.url) {
-      jsonUrl = '{"url":' + '"' + changeInfo.url + '"' + '}'
+      
+      //Pushing visited urls to the mongolab DB
+      jsonUrl = '{"url":' + '"' + changeInfo.url + '"' + '}';
+      /**
       var xhr = new XMLHttpRequest();
           xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/urls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s", true);
           xhr.setRequestHeader("Content-Type", "application/json");
           xhr.send(jsonUrl);
+      **/
+      console.log("Not pushing URLs to the Mongolab DB");
 
+      //Pushing visited URLs to the chrome storage area   POSSIBLY NOT NECESSARY TO USE!!!!
       urlList.push(tab.url);
       chrome.storage.sync.set({'urlList': urlList}, function() {
           // callback body
