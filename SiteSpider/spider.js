@@ -18,6 +18,7 @@
  * Find all links and frames on this page.
  * @return {Array<string>} List of all urls.
  */
+
 function get_urls() {
     var urls = [];
     // Copy the link nodelist into an array.
@@ -37,7 +38,23 @@ function get_urls() {
             urls.push(frame.src);
         }
     }
-    console.log(urls);
+
+    /**
+    My implementation! 
+    Adding all urls found on the open site, and
+    adds them to the Mongolab DB. 
+    **/
+    var spiderurls = "";
+    for(var tempUrl in urls){
+        spiderurls = '{"spiderurl":' + '"' + urls[tempUrl] + '"' + '}';
+        console.log(spiderurls);
+
+    var xhr = new XMLHttpRequest();    
+        xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(spiderurls);
+    }
+
     return urls;
 }
 
