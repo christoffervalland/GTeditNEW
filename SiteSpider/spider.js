@@ -54,7 +54,7 @@ function get_urls() {
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.send(spiderurls);
     }
-
+    
     return urls;
 }
 

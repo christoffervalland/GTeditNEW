@@ -7,9 +7,9 @@ try {
     }
 
     else if (changeInfo.url) {
-      
       //Pushing visited urls to the mongolab DB
-      jsonUrl = '{"url":' + '"' + changeInfo.url + '"' + '}';
+      //jsonUrl = '{"url":' + '"' + changeInfo.url + '"' + ', "weight": 1}';
+      jsonUrl = '{"visited":' + '{"url":' + '"' + changeInfo.url + '"' + ', "weight": 1}}';
 
       var xhr = new XMLHttpRequest();
           xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/urls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s", true);
@@ -21,6 +21,12 @@ try {
       chrome.storage.sync.set({'urlList': urlList}, function() {
           // callback body
       }); 
+
+      var xhrGet = new XMLHttpRequest();
+          xhrGet.open("GET", "https://api.mongolab.com/api/1/databases/testbase/collections/urls?q={" + "url" + ":" + changeInfo.url + "}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
+          xhrGet.send(null);
+      console.log(xhrGet);
+      
     }
 
     //console.log(sender.tab ? "from a content script: " + sender.tab.id+", "+sender.tab.url : "from the extension" );
