@@ -7,26 +7,50 @@ try {
     }
 
     else if (changeInfo.url) {
-      //Pushing visited urls to the mongolab DB
-      //jsonUrl = '{"url":' + '"' + changeInfo.url + '"' + ', "weight": 1}';
-      jsonUrl = '{"visited":' + '{"url":' + '"' + changeInfo.url + '"' + ', "weight": 1}}';
-
-      var xhr = new XMLHttpRequest();
-          xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/urls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s", true);
-          xhr.setRequestHeader("Content-Type", "application/json");
-          xhr.send(jsonUrl);
-
       //Pushing visited URLs to the chrome storage area   POSSIBLY NOT NECESSARY TO USE!!!!
       urlList.push(tab.url);
       chrome.storage.sync.set({'urlList': urlList}, function() {
           // callback body
       }); 
 
-      var xhrGet = new XMLHttpRequest();
-          xhrGet.open("GET", "https://api.mongolab.com/api/1/databases/testbase/collections/urls?q={" + "url" + ":" + changeInfo.url + "}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
-          xhrGet.send(null);
-      console.log(xhrGet);
-      
+      var xhrGet = new XMLHttpRequest()
+          xhrGet.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/urls?q={"visited.url": "' + changeInfo.url + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
+          xhrGet.onreadystatechange = function(){
+            var response = JSON.parse(xhrGet.responseText);
+            //var response = xhrGet.responseText;
+            alert("line 21: " + changeInfo.url);
+            alert("Line 22: " + response);
+            if(response.length == 0){
+              //alert("DENNE ER TOM");
+              //Pushing visited urls to the mongolab DB
+              //jsonUrl = '{"url":' + '"' + changeInfo.url + '"' +'}';
+              //jsonUrl = '{"url":' + '"' + changeInfo.url + '"' + ', "weight": 1}';
+              jsonUrl = '{"visited":' + '{"url":' + '"' + changeInfo.url + '"' + ', "weight": 1}}';
+              alert("Line 29: " + jsonUrl);
+              
+              var xhr = new XMLHttpRequest();
+                  xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/urls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s", true);
+                  xhr.setRequestHeader("Content-Type", "application/json");
+                  xhr.send(jsonUrl);
+
+            } else {
+              for(var i = 0; i < response.length; i++){
+                var temp = response[i];
+                var weight = temp.visited.weight + 1;
+                
+                /** FORTSETT HER HER HER HER!!!!!!!!!!!!! OPPDATERE VERDI I DB!!!
+
+                xhrGet.open("PUT", 'https://api.mongolab.com/api/1/databases/testbase/collections/urls?q={"visited.weight": "' + weight + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
+                xhrGet.send()
+              
+                **/
+
+
+              }
+            }
+          }
+
+          xhrGet.send();
     }
 
     //console.log(sender.tab ? "from a content script: " + sender.tab.id+", "+sender.tab.url : "from the extension" );
