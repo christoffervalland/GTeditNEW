@@ -1004,7 +1004,7 @@ RDFaProcessor.prototype.process = function(node,options) {
                      //Creates json-formatted string of objects to push to Mongolab DB
                      var objectJson = '{"object":' + '"' + content + '"' + '}';
                      var xhr = new XMLHttpRequest();
-                         xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/objects?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s", true);
+                         xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/objects&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s", true);
                          xhr.setRequestHeader("Content-Type", "application/json");
                          xhr.send(objectJson);
                      **/
