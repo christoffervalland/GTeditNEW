@@ -44,30 +44,14 @@ function get_urls() {
     Adding all urls found on the open site, and
     adds them to the Mongolab DB. 
     **/
-    var spiderurls = "";
     for(var tempUrl in urls){
-        spiderurls = '{"spiderurl":' + '"' + urls[tempUrl] + '"' + '}';
-
-
-
-
-
-
-
-/**
-    var xhr = new XMLHttpRequest();    
-        xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(spiderurls);
-**/
-
-
-
-
-
-
+        var spiderurls = '{"spiderurl":' + '"' + urls[tempUrl] + '"' + '}';
+        alert(spiderurls);
+        var xhr = new XMLHttpRequest();    
+            xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(spiderurls);
     }
-    
     return urls;
 }
 

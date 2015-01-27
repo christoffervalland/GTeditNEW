@@ -977,6 +977,7 @@ RDFaProcessor.prototype.process = function(node,options) {
             }
          }
          var values = this.tokenize(propertyAtt.value);
+
          for (var i=0; i<values.length; i++) {
             var predicate = this.parsePredicate(values[i],vocabulary,context.terms,prefixes,base);
             if (predicate) {
@@ -993,25 +994,47 @@ RDFaProcessor.prototype.process = function(node,options) {
                   } else {
                      this.addTriple(current,newSubject,predicate,{ type: datatype ? datatype : RDFaProcessor.PlainLiteralURI, value: content, language: language});
                      //console.log(newSubject+" "+predicate+"="+content);
+                     
+                     
+                     //This code works!
+                     var jsonObject = '{"object":' + '"' + content + '"' + '}';
+                     alert(jsonObject);
+                     var xhr = new XMLHttpRequest();    
+                        xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/objects?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                        xhr.send(jsonObject);
+                     
 
 
-
-
-
-
-
+                     //Trying to add weight and avoid duplicates in the DB as already done with the visited urls (background.js)
                      /**
-                     //Creates json-formatted string of objects to push to Mongolab DB
-                     var objectJson = '{"object":' + '"' + content + '"' + '}';
-                     var xhr = new XMLHttpRequest();
-                         xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/objects&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s", true);
-                         xhr.setRequestHeader("Content-Type", "application/json");
-                         xhr.send(objectJson);
+                     var xhrGet = new XMLHttpRequest();
+                     xhrGet.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/objects?q={"collectedobject.objectname": "' + content + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
+                     xhrGet.onreadystatechange = function(){
+                        var response = JSON.parse(xhrGet.responseText);
+                        //var response = xhrGet.responseText;
+                        if(response.length === 0){
+                           var jsonObject = '{"collectedobject":' + '{"objectname":' + '"' + content + '"' + ', "weight": 1}}';
+                           alert("Line 32: " + jsonObject);
+                           xhrGet.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/objects?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
+                           xhrGet.setRequestHeader("Content-Type", "application/json");
+                           xhrGet.send(jsonObject);
+                        } else {     
+                           alert("Object already exists");
+                           for(var i = 0; i < response.length; i++){
+                              var temp = response[i];
+                              var weight = temp.collectedobject.weight + 1;  
+                              alert("Line 45: " + weight);
+                              var updated = '{"collectedobject":{"objectname":' + content + '", "weight":' + weight + '}}';
+                              xhrGet.open("PUT", 'https://api.mongolab.com/api/1/databases/testbase/collections/urls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s&q={"collectedobject.objectname": "' + temp.collectedobject.objectname + '"}' );              
+                              xhrGet.setRequestHeader("Content-Type", "application/json");
+                              xhrGet.send(updated);
+                           }
+                        }
+                     }
+                     xhrGet.send();
                      **/
-
-
-
-
+                  
 
 
 
@@ -1538,11 +1561,7 @@ RDFaPredicate.prototype.toString = function(options) {
 document.greenTurtleInvoked = false;
 
 function getTransferSubject(subjects,subject) {
-   
-   var jsonObject = '';
-   var xhr = new XMLHttpRequest(); 
    var myObjects = new Array(); 
-       
 
    var snode = subjects[subject];
    var tsnode = { subject: subject, predicates: {} };
@@ -1569,15 +1588,9 @@ function getTransferSubject(subjects,subject) {
       }
       myObjects.push(object.value);
    }
-
    for(var object in myObjects){
-      console.log(myObjects[object]);
-      jsonObject = '{"object":' + '"' + myObjects[object] + '"' + '}';
-      xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/objects?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s", true);
-      xhr.setRequestHeader("Content-Type", "application/json");
-      xhr.send(jsonObject);
+      alert(myObjects[object]);
    }
-
    return tsnode;
 }
 
