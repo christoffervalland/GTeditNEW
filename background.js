@@ -18,7 +18,7 @@ try {
           // callback body
       }); 
       **/
-      //alert("Line 19: " + tab.url);
+      
       var xhrGet = new XMLHttpRequest();
           xhrGet.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/urls?q={"visited.url": "' + tab.url + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
           xhrGet.onreadystatechange = function(){
@@ -43,7 +43,6 @@ try {
               }
             }
           }
-
         xhrGet.send();
       }
     }

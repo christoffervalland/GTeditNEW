@@ -978,6 +978,14 @@ RDFaProcessor.prototype.process = function(node,options) {
          }
          var values = this.tokenize(propertyAtt.value);
 
+
+
+
+         //PUSHING TO LIST!!!
+         var objectList = new Array();
+
+
+
          for (var i=0; i<values.length; i++) {
             var predicate = this.parsePredicate(values[i],vocabulary,context.terms,prefixes,base);
             if (predicate) {
@@ -994,53 +1002,62 @@ RDFaProcessor.prototype.process = function(node,options) {
                   } else {
                      this.addTriple(current,newSubject,predicate,{ type: datatype ? datatype : RDFaProcessor.PlainLiteralURI, value: content, language: language});
                      //console.log(newSubject+" "+predicate+"="+content);
-                     
-                     
+                     objectList.push(content);
+                     /**
                      //This code works!
                      var jsonObject = '{"object":' + '"' + content + '"' + '}';
-                     alert(jsonObject);
                      var xhr = new XMLHttpRequest();    
                         xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/objects?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
                         xhr.setRequestHeader("Content-Type", "application/json");
                         xhr.send(jsonObject);
-                     
-
-
-                     //Trying to add weight and avoid duplicates in the DB as already done with the visited urls (background.js)
-                     /**
-                     var xhrGet = new XMLHttpRequest();
-                     xhrGet.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/objects?q={"collectedobject.objectname": "' + content + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
-                     xhrGet.onreadystatechange = function(){
-                        var response = JSON.parse(xhrGet.responseText);
-                        //var response = xhrGet.responseText;
-                        if(response.length === 0){
-                           var jsonObject = '{"collectedobject":' + '{"objectname":' + '"' + content + '"' + ', "weight": 1}}';
-                           alert("Line 32: " + jsonObject);
-                           xhrGet.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/objects?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
-                           xhrGet.setRequestHeader("Content-Type", "application/json");
-                           xhrGet.send(jsonObject);
-                        } else {     
-                           alert("Object already exists");
-                           for(var i = 0; i < response.length; i++){
-                              var temp = response[i];
-                              var weight = temp.collectedobject.weight + 1;  
-                              alert("Line 45: " + weight);
-                              var updated = '{"collectedobject":{"objectname":' + content + '", "weight":' + weight + '}}';
-                              xhrGet.open("PUT", 'https://api.mongolab.com/api/1/databases/testbase/collections/urls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s&q={"collectedobject.objectname": "' + temp.collectedobject.objectname + '"}' );              
-                              xhrGet.setRequestHeader("Content-Type", "application/json");
-                              xhrGet.send(updated);
-                           }
-                        }
-                     }
-                     xhrGet.send();
                      **/
-                  
-
-
-
+                     //Code above works, code below don't! Keep the one above until further.
+                     /**
+                     for(var i = 0; i < objectList.length; i++){
+                        //alert("DENNE ER RETT: " + objectList[i]);       
+                        xhr = new XMLHttpRequest();
+                        xhr.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/objects?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
+                        xhr.onreadystatechange = function(){
+                           var response = xhr.responseText;
+                           alert(response.length);
+                           if(response.length === 0){                     
+                              var jsonObject = '{"collectedobject":' + '{"objectname" : "' + objectList[i] + '", "weight" : 1}}';
+                              alert("Hei: " + jsonObject);
+                              xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/objects?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
+                              xhr.setRequestHeader("Content-Type", "application/json");
+                              xhr.send(jsonObject);
+                           } else {
+                              alert("Denne finnes! Vil nå oppdatere vekta til denne");
+                              for(var i = 0; i < response.length; i++){
+                                 var tempObject = response[i];
+                                 var newWeight = tempObject.collectedobject.weight + 1;
+                                 alert("New weight for object: " + newWeight);
+                                 var updatedJson = '{"collectedobject":{"objectname" : "' + tempObject.collectedobject.objectname + '", "weight" : ' + newWeight + '}}';
+                              }
+                           }
+                        }            
+                        xhr.send();
+                     }
+                     **/
 
                   }
                }
+            }
+         }
+         dbfunction(objectList);
+      }
+
+      function dbfunction(array){
+         for(var i = 0; i < array.length; i++){
+            //Denne alerten virker!
+            //alert(array[i]);
+            var xhr = new XMLHttpRequest();
+               xhr.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/objects?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
+               xhr.send();
+
+            var response = xhr.responseText;
+            for(var i = 0; i < response.length; i++){
+               alert("Response length: " + response[i]);
             }
          }
       }
@@ -1561,8 +1578,6 @@ RDFaPredicate.prototype.toString = function(options) {
 document.greenTurtleInvoked = false;
 
 function getTransferSubject(subjects,subject) {
-   var myObjects = new Array(); 
-
    var snode = subjects[subject];
    var tsnode = { subject: subject, predicates: {} };
    for (var predicate in snode.predicates) {
@@ -1586,10 +1601,6 @@ function getTransferSubject(subjects,subject) {
             tpnode.objects.push({ type: object.type, value: object.value});
          }
       }
-      myObjects.push(object.value);
-   }
-   for(var object in myObjects){
-      alert(myObjects[object]);
    }
    return tsnode;
 }
