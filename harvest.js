@@ -1003,14 +1003,16 @@ RDFaProcessor.prototype.process = function(node,options) {
                      this.addTriple(current,newSubject,predicate,{ type: datatype ? datatype : RDFaProcessor.PlainLiteralURI, value: content, language: language});
                      //console.log(newSubject+" "+predicate+"="+content);
                      objectList.push(content);
+                     
                      /**
-                     //This code works!
+                     //This code works! But with duplicates!
                      var jsonObject = '{"object":' + '"' + content + '"' + '}';
                      var xhr = new XMLHttpRequest();    
                         xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/objects?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
                         xhr.setRequestHeader("Content-Type", "application/json");
                         xhr.send(jsonObject);
                      **/
+
                      //Code above works, code below don't! Keep the one above until further.
                      /**
                      for(var i = 0; i < objectList.length; i++){

@@ -43,8 +43,9 @@ function get_urls() {
     My implementation! 
     Adding all urls found on the open site, and
     adds them to the Mongolab DB. 
+
+    DOES WORK, BUT NO CONTROL OF DUPLICATES!!!
     **/
-    /**
     for(var tempUrl in urls){
         var spiderurls = '{"spiderurl":' + '"' + urls[tempUrl] + '"' + '}';
         var xhr = new XMLHttpRequest();    
@@ -52,46 +53,50 @@ function get_urls() {
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.send(spiderurls);
     }
-    **/
-
-
     /**
-    My implementation trying to add the entire array! 
+    My implementation trying to add the entire array! DOESN'T WORK DOH!
     **/
-    for(var i = 0; i < urls.length; i++){
-    var xhr = new XMLHttpRequest();
-        xhr.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?q={"spider.url":"' + urls[i] + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
+    /**
+    for (var tempUrl in urls){
+        //alert("TempUrl: " + urls[tempUrl]);
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?q={"spider.url":"' + urls[tempUrl] + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
         xhr.onreadystatechange = function(){
             var response = JSON.parse(xhr.responseText);
-            if(response.length === 0){   
-                for(var i = 0; i < urls.length; i++){                  
-                    var jsonObject = '{"spider":' + '{"url" : "' + urls[i] + '", "weight" : 1}}';
-                    alert("PostToDB: " + jsonObject);
-                    xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
-                    xhr.setRequestHeader("Content-Type", "application/json");
-                    xhr.send(jsonObject);
+                if(response.length === 0){
+                    for(var i = 0; i < urls.length; i++){                  
+                        var jsonObject = '{"spider":' + '{"url" : "' + urls[i] + '", "weight" : 1}}';
+                        alert("PostToDB: " + jsonObject);
+                        xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                        xhr.send(jsonObject);
+                    }
+                } else {
+                    //Continue here! Code above works fine exept for the alert! Does not work without alert!!!.. 
+                    //Now you need to update weight for spiderurls if it already exists!!!!!!!!!!!!!!
+                    //alert("Antal objekt i DB: " + response.length);
+                    for(var i = 0; i < urls.length; i++){
+                        var newWeight = response[i].spider.weight + 1;
+                        var jsonObject = '{"spider" :' + '{"url" : "' + urls[i] + '", "weight" : ' + newWeight + '}}';
+                        alert(jsonObject);
+                        
+                        for(var i = 0; i < response.length; i++){
+                            var newWeight = response[i].spider.weight + 1;
+                            alert("New Weight: " + newWeight);
+                            var jsonObject = '{"spider:' + '{"url" : "' + response[i].spider.url + '", "weight" :' + newWeight + '}}';
+                            xhr.open("PUT", 'https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?q={"spider.url":"' + response[i].spider.url + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
+                            xhr.setRequestHeader("Content-Type", "application/json");
+                            xhr.send(jsonObject);
+                        }
+                    }
                 }
-            } else {
-                //Continue here! Code above works fine.. Now you need to update weight for spiderurls if it already exists!!!!!!!!!!!!!!
-                /**
-                //alert("Antal objekt i DB: " + response.length);
-                for(var i = 0; i < response.length; i++){
-                    //var tempObject = response[i];
-                    alert("Tempobjekt: " + response[i].spider.url);
-                    var newWeight = response[i].spider.weight + 1;
-                    //alert("New weight for object: " + newWeight);
-                    var updatedJson = '{"spiderurls":{"url" : "' + urls[i] + '", "weight" : ' + newWeight + '}}';
-                    xhrGet.open("PUT", 'https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s&q={"visited.url": "' + temp.visited.url + '"}' );              
-                    xhrGet.setRequestHeader("Content-Type", "application/json");
-                    xhrGet.send(updatedJson);
-                }**/
             }
-        }            
-        xhr.send();
-    }
+            xhr.send();
+        }**/           
 
     return urls;
 }
+
 
 function get_inline() {
     var urls = [];
