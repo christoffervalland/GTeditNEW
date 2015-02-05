@@ -46,6 +46,12 @@ function get_urls() {
 
     DOES WORK, BUT NO CONTROL OF DUPLICATES!!!
     **/
+    
+
+
+
+
+    /**
     for(var tempUrl in urls){
         var spiderurls = '{"spiderurl":' + '"' + urls[tempUrl] + '"' + '}';
         var xhr = new XMLHttpRequest();    
@@ -53,6 +59,13 @@ function get_urls() {
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.send(spiderurls);
     }
+    **/
+
+
+
+
+
+
     /**
     My implementation trying to add the entire array! DOESN'T WORK DOH!
     **/
