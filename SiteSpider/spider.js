@@ -46,11 +46,6 @@ function get_urls() {
 
     DOES WORK, BUT NO CONTROL OF DUPLICATES!!!
     **/
-    
-
-
-
-
     /**
     for(var tempUrl in urls){
         var spiderurls = '{"spiderurl":' + '"' + urls[tempUrl] + '"' + '}';
@@ -59,55 +54,53 @@ function get_urls() {
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.send(spiderurls);
     }
-    **/
+    **/        
+    
+    for(var tempUrl in urls){
+        postToDb(urls[tempUrl]);
+    }
 
+    return urls;
+}
 
-
-
-
-
+function postToDb(object){
+    console.log(object);
     /**
     My implementation trying to add the entire array! DOESN'T WORK DOH!
     **/
-    /**
-    for (var tempUrl in urls){
-        //alert("TempUrl: " + urls[tempUrl]);
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?q={"spider.url":"' + urls[tempUrl] + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
-        xhr.onreadystatechange = function(){
-            var response = JSON.parse(xhr.responseText);
-                if(response.length === 0){
-                    for(var i = 0; i < urls.length; i++){                  
-                        var jsonObject = '{"spider":' + '{"url" : "' + urls[i] + '", "weight" : 1}}';
-                        alert("PostToDB: " + jsonObject);
-                        xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
-                        xhr.setRequestHeader("Content-Type", "application/json");
-                        xhr.send(jsonObject);
-                    }
-                } else {
-                    //Continue here! Code above works fine exept for the alert! Does not work without alert!!!.. 
-                    //Now you need to update weight for spiderurls if it already exists!!!!!!!!!!!!!!
-                    //alert("Antal objekt i DB: " + response.length);
-                    for(var i = 0; i < urls.length; i++){
-                        var newWeight = response[i].spider.weight + 1;
-                        var jsonObject = '{"spider" :' + '{"url" : "' + urls[i] + '", "weight" : ' + newWeight + '}}';
-                        alert(jsonObject);
-                        
-                        for(var i = 0; i < response.length; i++){
-                            var newWeight = response[i].spider.weight + 1;
-                            alert("New Weight: " + newWeight);
-                            var jsonObject = '{"spider:' + '{"url" : "' + response[i].spider.url + '", "weight" :' + newWeight + '}}';
-                            xhr.open("PUT", 'https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?q={"spider.url":"' + response[i].spider.url + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
-                            xhr.setRequestHeader("Content-Type", "application/json");
-                            xhr.send(jsonObject);
-                        }
-                    }
-                }
+    //alert("TempUrl: " + urls[tempUrl]);
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?q={"spider.url":"' + object + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
+    xhr.onload = function(){
+        var response = JSON.parse(xhr.responseText);
+        if(response.length === 0){
+            var jsonObject = '{"spider":' + '{"url" : "' + object + '", "weight" : 1}}';
+            console.log("PostToDB: " + jsonObject);
+            
+            var xhrPost = new XMLHttpRequest();
+            xhrPost.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
+            xhrPost.setRequestHeader("Content-Type", "application/json");
+            xhrPost.send(jsonObject);
+        } else {
+            //Continue here! Code above works fine exept for the alert! Does not work without alert!!!.. 
+            //Now you need to update weight for spiderurls if it already exists!!!!!!!!!!!!!!
+            //alert("Antal objekt i DB: " + response.length);
+                    
+            for(var i = 0; i < response.length; i++){ 
+                var newWeight = response[i].spider.weight + 1;
+                var tempobject = response[i].spider.url;
+                //alert(jsonObject);
+                var jsonObject = '{"spider":' + '{"url" : "' + tempobject + '", "weight" :' + newWeight + '}}';
+                console.log(jsonObject);
+                
+                var xhrPut = new XMLHttpRequest();
+                xhrPut.open("PUT", 'https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?q={"spider.url":"' + tempobject + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
+                xhrPut.setRequestHeader("Content-Type", "application/json");
+                xhrPut.send(jsonObject);                
             }
-            xhr.send();
-        }**/           
-
-    return urls;
+        }
+    }
+    xhr.send();
 }
 
 

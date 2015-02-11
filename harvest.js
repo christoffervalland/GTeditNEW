@@ -1113,25 +1113,32 @@ function myDb(object){
    xhr.onload = function(){
       //console.log("MONGO: " + object);
       //console.log("Hei: " + this.responseText);
-      if(xhr.responseText == ""){
+
+      var response = JSON.parse(xhr.responseText);
+
+      if(response.length === 0){
          var json = '{"collectedobject":{"object":"' + object + '", "weight": 1}}';
          //console.log(json);
+
          var xhrPost = new XMLHttpRequest();
          xhrPost.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/objects?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
          xhrPost.setRequestHeader("Content-Type", "application/json");
          xhrPost.send(json);
+
       } else {
-         var response = JSON.parse(xhr.responseText);
-         var newWeight = response.collectedobject.weight + 1;
-         var tempObject = response.collectedobject.object;
-         var json = '{"collectedobject":{"object":"' + tempObject + '", "weight": ' + newWeight'}}';
-         console.log(json);
-         /**
-         var xhrPut = new XMLHttpRequest();
-         xhrPut.open("PUT", "https://api.mongolab.com/api/1/databases/testbase/collections/objects?q=apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
-         xhrPut.setRequestHeader("Content-Type", "application/json");
-         xhrPut.send(json);
-         **/
+         for(var i = 0; i < response.length; i++){
+            var newWeight = response[i].collectedobject.weight + 1;
+            var tempObject = response[i].collectedobject.object;
+            var json = '{"collectedobject":{"object":"' + tempObject + '", "weight": ' + newWeight + '}}';
+            //console.log(json);
+            //alert(json);
+
+            var xhrPut = new XMLHttpRequest();
+            xhrPut.open("PUT", 'https://api.mongolab.com/api/1/databases/testbase/collections/objects?q={"collectedobject.object":"' + tempObject + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
+            xhrPut.setRequestHeader("Content-Type", "application/json");
+            xhrPut.send(json);
+
+         }
       }
    }
 
