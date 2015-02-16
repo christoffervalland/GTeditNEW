@@ -62,7 +62,8 @@ try {
 
   //This happens ONBUTTON CLICK!!!!!!!!!!!!
   chrome.pageAction.onClicked.addListener(function(tab) {
-        var url = chrome.extension.getURL("viewer.xhtml");
+        //Change to "viewer.xhtml" to get back the RDFa table representation
+        var url = chrome.extension.getURL("Recommending/presentation.html");
         chrome.tabs.create({"url": url, "selected": true},
           function(viewerTab) {
            chrome.tabs.sendRequest(viewerTab.id, { viewerInit: true, url: tab.url, id: tab.id});
