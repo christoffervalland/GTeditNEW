@@ -21,16 +21,14 @@ function getTenObjects(){
 				printObjects(i+1, tempObject.collectedobject.object, tempObject.collectedobject.weight);
 			}
 			$('#objectLoading').hide();
-
+			$("#objectList > li > a").on("click", function() {
+				search($(this).html());
+			});
 		}
 	xhr.send();
 }
 getTenObjects();
 
-function printObjects(value, object, popularity){
-	var htmlList = $("#objectList");
-	htmlList.append('<li>' + value + ': ' + object + " | " + popularity + '</li>');
-}
 
 function getTenUrls(){
 	$('#urlLoading').show();
@@ -52,12 +50,8 @@ function getTenUrls(){
 }
 getTenUrls();
 
-function printUrls(value, url, popularity){
-	var htmlList = $("#urlList");
-	htmlList.append('<li>' + value + ': ' + url + " | " + popularity + '</li>');
-}
-
 function getTenSpiders(){
+	$('#spiderLoading').show();
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
 	xhr.onload = function(){
@@ -76,7 +70,22 @@ function getTenSpiders(){
 }
 getTenSpiders();
 
+function search(searchString){
+	console.log("Searchstring: " + searchString);
+	
+}
+
+function printObjects(value, object, popularity){
+	var objectList = $("#objectList");
+	objectList.append("<li>" + value + ": " + '<a href="#">' + object + '</a> | "' + popularity + "</li>");
+}
+
+function printUrls(value, url, popularity){
+	var htmlList = $("#urlList");
+	htmlList.append("<li>" + value + ": " + '<a href="' + url + '" target="_blank">' + url + "</a>" + " | " + popularity + "</li>");
+}
+
 function printSpiders(value, url, popularity){
 	var spiderList = $('#spiderurls');
-	spiderList.append('<li>' + value + ': ' + url + " | " + popularity + '</li>')
+	spiderList.append("<li>" + value + ": " + '<a href="' + url + '" target="_blank">' + url + "</a>" + " | " + popularity + "</li>")
 }
