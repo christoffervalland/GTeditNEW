@@ -71,9 +71,31 @@ function getTenSpiders(){
 getTenSpiders();
 
 function search(searchString){
-	console.log("Searchstring: " + searchString);
-	
+	//console.log("Searchstring: " + searchString);
+	var urlList = [];
+	var spiderList = [];
+	$('#urlList > li > a').each(function(){
+		urlList.push($(this).html());
+	});
+	$('#spiderurls > li > a').each(function(){
+		spiderList.push($(this).html());
+	});
+
+	//console.log("Urls: " + urlList);
+	//console.log("Spider: " + spiderList);
+	//console.log(urlList[0]);
+
+	for(var i = 0; i < urlList.length; i++){
+		gsitesearch(searchString, urlList[i]);
+	}
 }
+
+function gsitesearch(searchString, searchUrl){
+	//console.log(searchString + " : " + searchUrl);
+	var temp = searchString += " " + searchUrl;
+	window.open('http://www.google.com/search?q=' + encodeURIComponent(temp));
+}
+
 
 function printObjects(value, object, popularity){
 	var objectList = $("#objectList");
