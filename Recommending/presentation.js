@@ -8,6 +8,7 @@ Why: So that the most popular object will be printed first.
 **/
 function getTenObjects(){
 	$('#objectLoading').show();
+	$('#suggestionsLoading').hide();
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/objects?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
 	xhr.onload = function(){
@@ -20,9 +21,9 @@ function getTenObjects(){
 				//i+1 because it's an array and I don't want the first object to be 0.
 				printObjects(i+1, tempObject.collectedobject.object, tempObject.collectedobject.weight);
 			}
-			$('#objectLoading').hide();
 			$("#objectList > li > a").on("click", function() {
 				search($(this).html());
+				$('#suggestionsLoading').show();
 			});
 		}
 	xhr.send();
@@ -44,7 +45,6 @@ function getTenUrls(){
 				//i+1 because it's an array and I don't want the first object to be 0.
 				printUrls(i+1, tempUrl.visited.url, tempUrl.visited.weight);
 			}
-			$('#urlLoading').hide();
 		}
 	xhrUrl.send();
 }
@@ -64,7 +64,6 @@ function getTenSpiders(){
 				//i+1 because it's an array and I don't want the first object to be 0.
 				printSpiders(i+1, tempUrl.spider.url, tempUrl.spider.weight);
 			}
-			$('#spiderLoading').hide();
 		}
 	xhr.send();
 }
@@ -78,36 +77,57 @@ function search(searchString){
 		urlList.push($(this).html());
 	});
 	$('#spiderurls > li > a').each(function(){
-		spiderList.push($(this).html());
+		urlList.push($(this).html());
 	});
 
 	//console.log("Urls: " + urlList);
 	//console.log("Spider: " + spiderList);
 	//console.log(urlList[0]);
-
+	
 	for(var i = 0; i < urlList.length; i++){
-		gsitesearch(searchString, urlList[i]);
+		loadSite(searchString, urlList[i]);
 	}
 }
 
-function gsitesearch(searchString, searchUrl){
+function loadSite(searchString, searchUrl){
 	//console.log(searchString + " : " + searchUrl);
-	var temp = searchString += " " + searchUrl;
-	window.open('http://www.google.com/search?q=' + encodeURIComponent(temp));
+	$.get(searchUrl, function( data ) {
+  		//console.log(data);
+  		//if(searchString.indexOf(data) > -1){
+  		if(data.search(searchString) >= 0){
+  			printSuggestions(searchUrl, searchString);
+
+
+  			console.log(searchString + " exists on: " + searchUrl);
+  		} else {
+  			console.log(searchString + " DOESN'T EXIST ON: " + searchUrl);
+  		}
+	});
 }
 
 
 function printObjects(value, object, popularity){
 	var objectList = $("#objectList");
+	$('#objectLoading').hide();
 	objectList.append("<li>" + value + ": " + '<a href="#">' + object + '</a> | "' + popularity + "</li>");
+}
+
+function printSuggestions(object, searched){
+	var objectList = $("#suggestionList");
+	objectList.empty();
+	$('#suggestionsLoading').hide();
+	objectList.append("Based on your search query: " + searched + " we found this:");
+	objectList.append('<li><a href="' + object + '" target="_blank">' + object + '</a></li>');
 }
 
 function printUrls(value, url, popularity){
 	var htmlList = $("#urlList");
+	$('#urlLoading').hide();
 	htmlList.append("<li>" + value + ": " + '<a href="' + url + '" target="_blank">' + url + "</a>" + " | " + popularity + "</li>");
 }
 
 function printSpiders(value, url, popularity){
 	var spiderList = $('#spiderurls');
+	$('#spiderLoading').hide();
 	spiderList.append("<li>" + value + ": " + '<a href="' + url + '" target="_blank">' + url + "</a>" + " | " + popularity + "</li>")
 }
