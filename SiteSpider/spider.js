@@ -64,7 +64,6 @@ function get_urls() {
 }
 
 function postToDb(object){
-    console.log(object);
     /**
     My implementation trying to add the entire array! DOESN'T WORK DOH!
     **/
@@ -91,7 +90,7 @@ function postToDb(object){
                 var tempobject = response[i].spider.url;
                 //alert(jsonObject);
                 var jsonObject = '{"spider":' + '{"url" : "' + tempobject + '", "weight" :' + newWeight + '}}';
-                console.log(jsonObject);
+                console.log("Update DB: " + jsonObject);
                 
                 var xhrPut = new XMLHttpRequest();
                 xhrPut.open("PUT", 'https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?q={"spider.url":"' + tempobject + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');

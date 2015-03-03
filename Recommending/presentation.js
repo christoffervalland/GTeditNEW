@@ -6,6 +6,9 @@ To-do: Check if spiderurls exists in popular urls
 		IF exists: Total value = spider.weight + url.weight
 Why: So that the most popular object will be printed first.
 **/
+
+$('#suggestionInfo').hide();
+
 function getTenObjects(){
 	$('#objectLoading').show();
 	$('#suggestionsLoading').hide();
@@ -73,16 +76,15 @@ function search(searchString){
 	//console.log("Searchstring: " + searchString);
 	var urlList = [];
 	var spiderList = [];
+	
+	$("#suggestionList").empty();
+
 	$('#urlList > li > a').each(function(){
 		urlList.push($(this).html());
 	});
 	$('#spiderurls > li > a').each(function(){
 		urlList.push($(this).html());
 	});
-
-	//console.log("Urls: " + urlList);
-	//console.log("Spider: " + spiderList);
-	//console.log(urlList[0]);
 	
 	for(var i = 0; i < urlList.length; i++){
 		loadSite(searchString, urlList[i]);
@@ -95,10 +97,10 @@ function loadSite(searchString, searchUrl){
   		//console.log(data);
   		//if(searchString.indexOf(data) > -1){
   		if(data.search(searchString) >= 0){
+
   			printSuggestions(searchUrl, searchString);
-
-
   			console.log(searchString + " exists on: " + searchUrl);
+
   		} else {
   			console.log(searchString + " DOESN'T EXIST ON: " + searchUrl);
   		}
@@ -113,11 +115,13 @@ function printObjects(value, object, popularity){
 }
 
 function printSuggestions(object, searched){
-	var objectList = $("#suggestionList");
-	objectList.empty();
 	$('#suggestionsLoading').hide();
-	objectList.append("Based on your search query: " + searched + " we found this:");
-	objectList.append('<li><a href="' + object + '" target="_blank">' + object + '</a></li>');
+
+	$('#suggestionInfo').empty();
+	$('#suggestionInfo').show();
+	$('#suggestionInfo').append("Here's the suggestion for your search query: " + searched);
+
+	$("#suggestionList").append('<li><a href="' + object + '" target="_blank">' + object + '</a></li>');
 }
 
 function printUrls(value, url, popularity){

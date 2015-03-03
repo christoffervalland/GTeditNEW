@@ -8,16 +8,8 @@ var version = {
 
 
 
-
-
-
 //PUSHING TO LIST!!!
 var objectList = new Array();
-
-
-
-
-
 
 
 
@@ -1015,17 +1007,6 @@ RDFaProcessor.prototype.process = function(node,options) {
                      //console.log(content);
 
                      myDb(content);
-
-                     /**
-                     //This code works! But with duplicates!
-                     var jsonObject = '{"object":' + '"' + content + '"' + '}';
-                     var xhr = new XMLHttpRequest();    
-                        xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/objects?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
-                        xhr.setRequestHeader("Content-Type", "application/json");
-                        xhr.send(jsonObject);
-                     **/
-
-                     //Code above works, code below don't! Keep the one above until further.
                      
                   }
                }
@@ -1099,26 +1080,18 @@ RDFaProcessor.prototype.process = function(node,options) {
    }
 }
 
-
-
-
-
-
-
 function myDb(object){
-   //console.log("MONGO: " + object);
+   console.log("MONGO: " + object);
    var xhr = new XMLHttpRequest();
    xhr.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/objects?q={"collectedobject.object":"' + object + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s', true);
-   //console.log("HEI");
    xhr.onload = function(){
       //console.log("MONGO: " + object);
-      //console.log("Hei: " + this.responseText);
 
       var response = JSON.parse(xhr.responseText);
 
       if(response.length === 0){
          var json = '{"collectedobject":{"object":"' + object + '", "weight": 1}}';
-         //console.log(json);
+         console.log("Post to DB: " + json);
 
          var xhrPost = new XMLHttpRequest();
          xhrPost.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/objects?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
@@ -1130,8 +1103,7 @@ function myDb(object){
             var newWeight = response[i].collectedobject.weight + 1;
             var tempObject = response[i].collectedobject.object;
             var json = '{"collectedobject":{"object":"' + tempObject + '", "weight": ' + newWeight + '}}';
-            //console.log(json);
-            //alert(json);
+            console.log("Update DB: " + json);
 
             var xhrPut = new XMLHttpRequest();
             xhrPut.open("PUT", 'https://api.mongolab.com/api/1/databases/testbase/collections/objects?q={"collectedobject.object":"' + tempObject + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
@@ -1143,40 +1115,8 @@ function myDb(object){
    }
 
    xhr.send();
-   //var response = JSON.parse(xhr.responseText);
-   //console.log(xhr.responseText);
-   
-
-/**
-
-**/
-   /**xhr.onreadystatechange = function(){
-      console.log("HEI");
-      var response = JSON.parse(xhr.responseText);
-      console.log("HOMO");
-      if(response.length === 0){
-         var json = '{"collectedobject":{"object":"' + object + '", "weight": 1}}';
-         console.log(json);
-         var xhrPost = new XMLHttpRequest(); 
-         xhrPost.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/objects?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
-         xhrPost.setRequestHeader("Content-Type", "application/json");
-         xhrPost.send(json);
-      
-      } else {
-         console.log("Else: Denne finnes fra før!");
-      }
-      xhr.send();
-
-   }
-   **/
 
 }
-
-
-
-
-
-
 
 RDFaProcessor.prototype.copyProperties = function() {
 }
