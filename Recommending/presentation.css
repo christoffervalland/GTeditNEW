@@ -9,6 +9,10 @@ ul li{
   list-style-type:none;
 }
 
+#suggestedObject {
+  font-weight: bold;
+}
+
 .spinner{
   width:100px;
   height:100px;

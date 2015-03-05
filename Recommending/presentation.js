@@ -8,6 +8,7 @@ Why: So that the most popular object will be printed first.
 **/
 
 $('#suggestionInfo').hide();
+$('#suggestedObject').hide();
 
 function getTenObjects(){
 	$('#objectLoading').show();
@@ -75,20 +76,45 @@ getTenSpiders();
 function search(searchString){
 	//console.log("Searchstring: " + searchString);
 	var urlList = [];
-	var spiderList = [];
+	//var spiderList = [];
 	
 	$("#suggestionList").empty();
-
-	$('#urlList > li > a').each(function(){
-		urlList.push($(this).html());
-	});
-	$('#spiderurls > li > a').each(function(){
-		urlList.push($(this).html());
-	});
 	
-	for(var i = 0; i < urlList.length; i++){
-		loadSite(searchString, urlList[i]);
+
+
+	var xhrUrl = new XMLHttpRequest();
+	xhrUrl.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/urls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
+	xhrUrl.onload = function(){
+		var response = JSON.parse(xhrUrl.responseText);
+		response.sort(function(a, b){
+			return b.visited.weight - a.visited.weight;
+		});
+		console.log("ANTAL URL: " + response.length);
+		for(var i = 0; i < response.length; i++){
+			var tempUrl = response[i];
+			//console.log(tempUrl.visited.url);
+			loadSite(searchString, tempUrl.visited.url);
+		}
 	}
+	xhrUrl.send();
+
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
+	xhr.onload = function(){
+		var response = JSON.parse(xhr.responseText);
+		response.sort(function(a, b){
+			return b.spider.weight - a.spider.weight;
+		});
+		console.log("ANTAL SPIDERURL: " + response.length);
+		for(var i = 0; i < response.length; i++){
+			var tempUrl = response[i];
+			//console.log(tempUrl.spider.url);
+			loadSite(searchString, tempUrl.spider.url);
+		}
+	}
+	xhr.send();
+
 }
 
 function loadSite(searchString, searchUrl){
@@ -99,10 +125,10 @@ function loadSite(searchString, searchUrl){
   		if(data.search(searchString) >= 0){
 
   			printSuggestions(searchUrl, searchString);
-  			console.log(searchString + " exists on: " + searchUrl);
+  			//console.log(searchString + " exists on: " + searchUrl);
 
   		} else {
-  			console.log(searchString + " DOESN'T EXIST ON: " + searchUrl);
+  			//console.log(searchString + " DOESN'T EXIST ON: " + searchUrl);
   		}
 	});
 }
@@ -111,7 +137,7 @@ function loadSite(searchString, searchUrl){
 function printObjects(value, object, popularity){
 	var objectList = $("#objectList");
 	$('#objectLoading').hide();
-	objectList.append("<li>" + value + ": " + '<a href="#">' + object + '</a> | "' + popularity + "</li>");
+	objectList.append("<li>" + value + ": " + '<a href="#">' + object + '</a> | ' + popularity + "</li>");
 }
 
 function printSuggestions(object, searched){
@@ -119,8 +145,10 @@ function printSuggestions(object, searched){
 
 	$('#suggestionInfo').empty();
 	$('#suggestionInfo').show();
-	$('#suggestionInfo').append("Here's the suggestion for your search query: " + searched);
-
+	$('#suggestionInfo').append("Here's the suggestion for your search query: ");
+	$('#suggestedObject').empty();
+	$('#suggestedObject').show();
+	$('#suggestedObject').append(searched);
 	$("#suggestionList").append('<li><a href="' + object + '" target="_blank">' + object + '</a></li>');
 }
 
