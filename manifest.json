@@ -7,7 +7,7 @@
    "background": {
       "scripts": ["background.js"]
    },
-   "page_action" : {
+   "browser_action" : {
       "default_icon": "icon16.png",
       "default_title": "Show Triples"
    },

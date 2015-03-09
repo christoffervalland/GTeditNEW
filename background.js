@@ -48,7 +48,7 @@ try {
     }
   });
 
-
+/**
   //This happens when the backgroundscript receive message from contentscript
   chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
      //console.log(sender.tab ? "from a content script: " + sender.tab.id+", "+sender.tab.url : "from the extension" );
@@ -59,9 +59,10 @@ try {
         sendResponse({}); // snub them.
      }
   });
+**/
 
   //This happens ONBUTTON CLICK!!!!!!!!!!!!
-  chrome.pageAction.onClicked.addListener(function(tab) {
+  chrome.browserAction.onClicked.addListener(function(tab) {
         //Change to "viewer.xhtml" to get back the RDFa table representation
         var url = chrome.extension.getURL("Recommending/presentation.html");
         chrome.tabs.create({"url": url, "selected": true},
