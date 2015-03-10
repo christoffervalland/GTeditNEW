@@ -37,37 +37,23 @@ function get_urls() {
         for (var frame, x = 0; frame = iframes[x]; x++) {
             urls.push(frame.src);
         }
-    }
-
-    /**
-    My implementation! 
-    Adding all urls found on the open site, and
-    adds them to the Mongolab DB. 
-
-    DOES WORK, BUT NO CONTROL OF DUPLICATES!!!
-    **/
-    /**
-    for(var tempUrl in urls){
-        var spiderurls = '{"spiderurl":' + '"' + urls[tempUrl] + '"' + '}';
-        var xhr = new XMLHttpRequest();    
-            xhr.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.send(spiderurls);
-    }
-    **/        
+    } 
     
+    /**
+    @author: Christoffer Valland
+    Calling the postToDb-method including the urls found.
+    **/
     for(var tempUrl in urls){
         postToDb(urls[tempUrl]);
     }
 
     return urls;
 }
-
+/**
+@author: Christoffer Valland
+Method for posting URLs found on a web site to the database.
+**/
 function postToDb(object){
-    /**
-    My implementation trying to add the entire array! DOESN'T WORK DOH!
-    **/
-    //alert("TempUrl: " + urls[tempUrl]);
     var xhr = new XMLHttpRequest();
     xhr.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?q={"spider.url":"' + object + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
     xhr.onload = function(){
@@ -80,11 +66,7 @@ function postToDb(object){
             xhrPost.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
             xhrPost.setRequestHeader("Content-Type", "application/json");
             xhrPost.send(jsonObject);
-        } else {
-            //Continue here! Code above works fine exept for the alert! Does not work without alert!!!.. 
-            //Now you need to update weight for spiderurls if it already exists!!!!!!!!!!!!!!
-            //alert("Antal objekt i DB: " + response.length);
-                    
+        } else {            
             for(var i = 0; i < response.length; i++){ 
                 var newWeight = response[i].spider.weight + 1;
                 var tempobject = response[i].spider.url;
