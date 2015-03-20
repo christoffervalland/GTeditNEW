@@ -12,7 +12,6 @@ $('#suggestedObject').hide();
 
 function getTenObjects(){
 	$('#objectLoading').show();
-	$('#suggestionsLoading').hide();
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/objects?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
 	xhr.onload = function(){
@@ -25,7 +24,10 @@ function getTenObjects(){
 				//i+1 because it's an array and I don't want the first object to be 0.
 				printObjects(i+1, tempObject.collectedobject.object, tempObject.collectedobject.weight);
 			}
+			search(response[0].collectedobject.object);
 			$("#objectList > li > a").on("click", function() {
+				$('#suggestedObject').hide();
+				$('#suggestionInfo').hide();
 				search($(this).html());
 				$('#suggestionsLoading').show();
 			});
@@ -79,8 +81,6 @@ function search(searchString){
 	//var spiderList = [];
 	
 	$("#suggestionList").empty();
-	
-
 
 	var xhrUrl = new XMLHttpRequest();
 	xhrUrl.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/urls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
