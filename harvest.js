@@ -4,14 +4,8 @@ var version = {
    greenTurtle: "1.2.0"
 };
 
-
-
-
-
 //PUSHING TO LIST!!!
 var objectList = new Array();
-
-
 
 function URIResolver() {
 }
