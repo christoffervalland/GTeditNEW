@@ -60,7 +60,7 @@ function postToDb(object){
         var response = JSON.parse(xhr.responseText);
         if(response.length === 0){
             var jsonObject = '{"spider":' + '{"url" : "' + object + '", "weight" : 1}}';
-            console.log("PostToDB: " + jsonObject);
+            //console.log("PostToDB: " + jsonObject);
             
             var xhrPost = new XMLHttpRequest();
             xhrPost.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
@@ -72,7 +72,7 @@ function postToDb(object){
                 var tempobject = response[i].spider.url;
                 //alert(jsonObject);
                 var jsonObject = '{"spider":' + '{"url" : "' + tempobject + '", "weight" :' + newWeight + '}}';
-                console.log("Update DB: " + jsonObject);
+                //console.log("Update DB: " + jsonObject);
                 
                 var xhrPut = new XMLHttpRequest();
                 xhrPut.open("PUT", 'https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?q={"spider.url":"' + tempobject + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');

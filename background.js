@@ -1,24 +1,10 @@
 try {
-  //This happens when message received from content script... 
-  //Fix it so that it only happens once!
-  chrome.tabs.onUpdated.addListener(function(id, changeInfo, tab) {
-  if(changeInfo.status == "complete"){
-    //alert("Page finished loading");
-    
-    if(tab.url == "chrome://newtab") {
-      //Should provide code to avoid storing chrome-specific urls
-      //Examples: "chrome://newtab", "chrome://extensions" etc etc.
-    } else {
-      /**
-      var urlList = [];
-      
-      //Pushing visited URLs to the chrome storage area   POSSIBLY NOT NECESSARY TO USE!!!!
-      urlList.push(tab.url);
-      chrome.storage.sync.set({'urlList': urlList}, function() {
-          // callback body
-      }); 
-      **/
-      
+  chrome.tabs.onUpdated.addListener(function(request, changeInfo, tab) {
+    if(changeInfo.url == "chrome://newtab/") {
+
+    }
+
+    else if (changeInfo.url) {
       var xhrGet = new XMLHttpRequest();
           xhrGet.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/urls?q={"visited.url": "' + tab.url + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
           xhrGet.onreadystatechange = function(){
@@ -44,12 +30,17 @@ try {
             }
           }
         xhrGet.send();
-      }
     }
+
+    //console.log(sender.tab ? "from a content script: " + sender.tab.id+", "+sender.tab.url : "from the extension" );
+     if (request.harvestedTriples) {
+         chrome.pageAction.show(sender.tab.id);
+         sendResponse({});
+     }  else {
+        sendResponse({}); // snub them.
+     }
   });
 
-/**
-  //This happens when the backgroundscript receive message from contentscript
   chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
      //console.log(sender.tab ? "from a content script: " + sender.tab.id+", "+sender.tab.url : "from the extension" );
      if (request.harvestedTriples) {
@@ -59,11 +50,9 @@ try {
         sendResponse({}); // snub them.
      }
   });
-**/
 
-  //This happens ONBUTTON CLICK!!!!!!!!!!!!
+  //This happens when clicking the browseraction-button
   chrome.browserAction.onClicked.addListener(function(tab) {
-        //Change to "viewer.xhtml" to get back the RDFa table representation
         var url = chrome.extension.getURL("Recommending/presentation.html");
         chrome.tabs.create({"url": url, "selected": true},
           function(viewerTab) {

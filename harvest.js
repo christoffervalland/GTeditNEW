@@ -3,10 +3,6 @@ var version = {
    extension: "1.2.0",
    greenTurtle: "1.2.0"
 };
-
-//PUSHING TO LIST!!!
-var objectList = new Array();
-
 function URIResolver() {
 }
 URIResolver.SCHEME = /^[A-Za-z][A-Za-z0-9\+\-\.]*\:/;
@@ -980,7 +976,6 @@ RDFaProcessor.prototype.process = function(node,options) {
             }
          }
          var values = this.tokenize(propertyAtt.value);
-
          for (var i=0; i<values.length; i++) {
             var predicate = this.parsePredicate(values[i],vocabulary,context.terms,prefixes,base);
             if (predicate) {
@@ -997,15 +992,12 @@ RDFaProcessor.prototype.process = function(node,options) {
                   } else {
                      this.addTriple(current,newSubject,predicate,{ type: datatype ? datatype : RDFaProcessor.PlainLiteralURI, value: content, language: language});
                      //console.log(newSubject+" "+predicate+"="+content);
-                     objectList.push(content);
-                     //console.log(content);
-
+                     console.log(content);
                      myDb(content);
                      
                   }
                }
             }
-            
          }
       }
 
@@ -1107,9 +1099,7 @@ function myDb(object){
          }
       }
    }
-
    xhr.send();
-
 }
 
 RDFaProcessor.prototype.copyProperties = function() {
@@ -1185,6 +1175,7 @@ GraphRDFaProcessor.prototype.newSubject = function(origin,subject) {
    }
    return snode;
 }
+
 
 GraphRDFaProcessor.prototype.addTriple = function(origin,subject,predicate,object) {
    var snode = this.newSubject(origin,subject);
@@ -1591,7 +1582,7 @@ function getTransferSubject(subjects,subject) {
 }
 
 function log(msg) {
-   console.log("Min Turtle: "+msg);
+   console.log("Green Turtle: "+msg);
 }
 
 function detectGreenTurtle(waitPeriod,response) {
@@ -1608,7 +1599,7 @@ function detectGreenTurtle(waitPeriod,response) {
    var handler = function(event) {
       clearTimeout(timer);
       window.removeEventListener("green-turtle-response",handler,false);
-      console.log("Min Turtle "+event.detail.version+" detected.");
+      console.log("Green Turtle "+event.detail.version+" detected.");
       response(true);
    };
    window.addEventListener("green-turtle-response",handler,false);
@@ -1674,7 +1665,7 @@ function injectGreenTurtle() {
       }
       var options = "window.GreenTurtleOptions = { microdataEnabled: "+response.microdataEnabled+" };"
       var optionsURL = "data:text/javascript;base64,"+btoa(options);
-      log("Injecting Min Turtle RDFa ...");
+      log("Injecting Green Turtle RDFa ...");
       var optionsScript = document.createElement("script");
       optionsScript.setAttribute("type","text/javascript");
       optionsScript.setAttribute("src",optionsURL);

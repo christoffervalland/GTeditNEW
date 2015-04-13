@@ -1731,6 +1731,7 @@ DocumentData.prototype.getSubjects = function(property,value) {
          subjects.push(subject);
       }
    }
+   console.log(subjects);
    return subjects;
 };
 
