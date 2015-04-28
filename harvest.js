@@ -992,7 +992,6 @@ RDFaProcessor.prototype.process = function(node,options) {
                   } else {
                      this.addTriple(current,newSubject,predicate,{ type: datatype ? datatype : RDFaProcessor.PlainLiteralURI, value: content, language: language});
                      //console.log(newSubject+" "+predicate+"="+content);
-                     console.log(content);
                      myDb(content);
                      
                   }
@@ -1067,7 +1066,7 @@ RDFaProcessor.prototype.process = function(node,options) {
 }
 
 function myDb(object){
-   console.log("MONGO: " + object);
+   //console.log("MONGO DB: " + object);
    var xhr = new XMLHttpRequest();
    xhr.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/objects?q={"collectedobject.object":"' + object + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s', true);
    xhr.onload = function(){
