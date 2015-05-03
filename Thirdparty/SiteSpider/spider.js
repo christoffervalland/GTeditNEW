@@ -55,7 +55,7 @@ Method for posting URLs found on a web site to the database.
 **/
 function postToDb(object){
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?q={"spider.url":"' + object + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
+    xhr.open("GET", 'https://api.mongolab.com/api/1/databases/semanticuri/collections/spiderurls?q={"spider.url":"' + object + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
     xhr.onload = function(){
         var response = JSON.parse(xhr.responseText);
         if(response.length === 0){
@@ -63,7 +63,7 @@ function postToDb(object){
             //console.log("PostToDB: " + jsonObject);
             
             var xhrPost = new XMLHttpRequest();
-            xhrPost.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
+            xhrPost.open("POST", "https://api.mongolab.com/api/1/databases/semanticuri/collections/spiderurls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
             xhrPost.setRequestHeader("Content-Type", "application/json");
             xhrPost.send(jsonObject);
         } else {            
@@ -75,7 +75,7 @@ function postToDb(object){
                 //console.log("Update DB: " + jsonObject);
                 
                 var xhrPut = new XMLHttpRequest();
-                xhrPut.open("PUT", 'https://api.mongolab.com/api/1/databases/testbase/collections/spiderurls?q={"spider.url":"' + tempobject + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
+                xhrPut.open("PUT", 'https://api.mongolab.com/api/1/databases/semanticuri/collections/spiderurls?q={"spider.url":"' + tempobject + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
                 xhrPut.setRequestHeader("Content-Type", "application/json");
                 xhrPut.send(jsonObject);                
             }

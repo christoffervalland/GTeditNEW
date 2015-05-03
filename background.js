@@ -6,14 +6,14 @@ try {
 
     else if (changeInfo.url) {
       var xhrGet = new XMLHttpRequest();
-          xhrGet.open("GET", 'https://api.mongolab.com/api/1/databases/testbase/collections/urls?q={"visited.url": "' + tab.url + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
+          xhrGet.open("GET", 'https://api.mongolab.com/api/1/databases/semanticuri/collections/urls?q={"visited.url": "' + tab.url + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
           xhrGet.onreadystatechange = function(){
             var response = JSON.parse(xhrGet.responseText);
             //var response = xhrGet.responseText;
             if(response.length === 0){
               var jsonUrl = '{"visited":' + '{"url":' + '"' + tab.url + '"' + ', "weight": 1}}';
               //alert("Line 32: " + jsonUrl);
-              xhrGet.open("POST", "https://api.mongolab.com/api/1/databases/testbase/collections/urls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
+              xhrGet.open("POST", "https://api.mongolab.com/api/1/databases/semanticuri/collections/urls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
               xhrGet.setRequestHeader("Content-Type", "application/json");
               xhrGet.send(jsonUrl);
             } else {           
@@ -22,7 +22,7 @@ try {
                 var weight = temp.visited.weight + 1;  
                 //alert("Line 45: " + weight);
                 var updated = '{"visited":' + '{"url":' + '"' + tab.url + '"' + ', "weight":' + weight + '}}';
-                xhrGet.open("PUT", 'https://api.mongolab.com/api/1/databases/testbase/collections/urls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s&q={"visited.url": "' + temp.visited.url + '"}' );              
+                xhrGet.open("PUT", 'https://api.mongolab.com/api/1/databases/semanticuri/collections/urls?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s&q={"visited.url": "' + temp.visited.url + '"}' );              
                 xhrGet.setRequestHeader("Content-Type", "application/json");
                 xhrGet.send(updated);
 
