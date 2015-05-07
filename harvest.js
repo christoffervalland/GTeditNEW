@@ -1095,14 +1095,11 @@ function myDb(uri, predicate, object){
             var tempObject = response[i].collectedobject.object;
             var json = '{"collectedobject":{"uri":"' + tempUri + '", "predicate":"' + tempPredicate + '", "object":"' + tempObject + '", "weight": ' + newWeight + '}}';
             console.log("Update DB: " + json);
-            if((uri ===tempUri) & (predicate === tempPredicate)){
-               console.log("URI: " + uri + " MIN URI: " + tempUri);
-               console.log("PREDICATE: " + predicate + " MIN predicate: " + tempPredicate);
-               var xhrPut = new XMLHttpRequest();
+            
+            var xhrPut = new XMLHttpRequest();
                xhrPut.open("PUT", 'https://api.mongolab.com/api/1/databases/semanticuri/collections/objects?q={"collectedobject.object":"' + tempObject + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
                xhrPut.setRequestHeader("Content-Type", "application/json");
                xhrPut.send(json);
-            }
          }
       }
    }
