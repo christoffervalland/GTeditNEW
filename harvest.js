@@ -992,9 +992,9 @@ RDFaProcessor.prototype.process = function(node,options) {
                   } else {
                      this.addTriple(current,newSubject,predicate,{ type: datatype ? datatype : RDFaProcessor.PlainLiteralURI, value: content, language: language});
                      //console.log(newSubject+" "+predicate+"="+content);
-                     //console.log("NEW subject: " + newSubject + " Object: " + content);
+                     //console.log("NEW subject: " + newSubject + " PREDICATE: " + predicate + " Object: " + content);
                      //Calling the method for posting to db
-                     myDb(newSubject, content);
+                     myDb(newSubject, predicate, content);
                   }
                }
             }
@@ -1069,7 +1069,7 @@ RDFaProcessor.prototype.process = function(node,options) {
 /**
 Method for posting uri and object to the database
 **/
-function myDb(uri, object){
+function myDb(uri, predicate, object){
    //console.log("MONGO: " + object);
    var xhr = new XMLHttpRequest();
    xhr.open("GET", 'https://api.mongolab.com/api/1/databases/semanticuri/collections/objects?q={"collectedobject.object":"' + object + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s', true);
@@ -1079,7 +1079,7 @@ function myDb(uri, object){
       var response = JSON.parse(xhr.responseText);
 
       if(response.length === 0){
-         var json = '{"collectedobject":{"uri":"' + uri + '", "object":"' + object + '", "weight": 1}}';
+         var json = '{"collectedobject":{"uri":"' + uri + '", "predicate":"' + predicate + '", "object":"' + object + '", "weight": 1}}';
          console.log("Post to DB: " + json);
 
          var xhrPost = new XMLHttpRequest();
@@ -1091,15 +1091,18 @@ function myDb(uri, object){
          for(var i = 0; i < response.length; i++){
             var newWeight = response[i].collectedobject.weight + 1;
             var tempUri = response[i].collectedobject.uri;
+            var tempPredicate = response[i].collectedobject.predicate;
             var tempObject = response[i].collectedobject.object;
-            var json = '{"collectedobject":{"uri":"' + tempUri + '", "object":"' + tempObject + '", "weight": ' + newWeight + '}}';
+            var json = '{"collectedobject":{"uri":"' + tempUri + '", "predicate":"' + tempPredicate + '", "object":"' + tempObject + '", "weight": ' + newWeight + '}}';
             console.log("Update DB: " + json);
-
-            var xhrPut = new XMLHttpRequest();
-            xhrPut.open("PUT", 'https://api.mongolab.com/api/1/databases/semanticuri/collections/objects?q={"collectedobject.object":"' + tempObject + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
-            xhrPut.setRequestHeader("Content-Type", "application/json");
-            xhrPut.send(json);
-
+            if((uri ===tempUri) & (predicate === tempPredicate)){
+               console.log("URI: " + uri + " MIN URI: " + tempUri);
+               console.log("PREDICATE: " + predicate + " MIN predicate: " + tempPredicate);
+               var xhrPut = new XMLHttpRequest();
+               xhrPut.open("PUT", 'https://api.mongolab.com/api/1/databases/semanticuri/collections/objects?q={"collectedobject.object":"' + tempObject + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s');
+               xhrPut.setRequestHeader("Content-Type", "application/json");
+               xhrPut.send(json);
+            }
          }
       }
    }
