@@ -994,7 +994,9 @@ RDFaProcessor.prototype.process = function(node,options) {
                      //console.log(newSubject+" "+predicate+"="+content);
                      //console.log("NEW subject: " + newSubject + " PREDICATE: " + predicate + " Object: " + content);
                      //Calling the method for posting to db
-                     myDb(newSubject, predicate, content);
+                     //If storing subject and predicate uncomment line below.
+                     //myDb(newSubject, predicate, content);
+                     myDb(content);
                   }
                }
             }
@@ -1068,8 +1070,11 @@ RDFaProcessor.prototype.process = function(node,options) {
 
 /**
 Method for posting uri and object to the database
+If the database should store URI and predicate in addition to the object, 
+uncomment the line below.
 **/
-function myDb(uri, predicate, object){
+//function myDb(uri, predicate, object){
+function myDb(object){
    //console.log("MONGO: " + object);
    var xhr = new XMLHttpRequest();
    xhr.open("GET", 'https://api.mongolab.com/api/1/databases/semanticuri/collections/objects?q={"collectedobject.object":"' + object + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s', true);
@@ -1079,7 +1084,9 @@ function myDb(uri, predicate, object){
       var response = JSON.parse(xhr.responseText);
 
       if(response.length === 0){
-         var json = '{"collectedobject":{"uri":"' + uri + '", "predicate":"' + predicate + '", "object":"' + object + '", "weight": 1}}';
+         //Code line below is used when URI and predicate also should be stored.
+         //var json = '{"collectedobject":{"uri":"' + uri + '", "predicate":"' + predicate + '", "object":"' + object + '", "weight": 1}}';
+         var json = '{"collectedobject":{"object":"' + object + '", "weight": 1}}';
          console.log("Post to DB: " + json);
 
          var xhrPost = new XMLHttpRequest();
@@ -1093,7 +1100,9 @@ function myDb(uri, predicate, object){
             var tempUri = response[i].collectedobject.uri;
             var tempPredicate = response[i].collectedobject.predicate;
             var tempObject = response[i].collectedobject.object;
-            var json = '{"collectedobject":{"uri":"' + tempUri + '", "predicate":"' + tempPredicate + '", "object":"' + tempObject + '", "weight": ' + newWeight + '}}';
+            //Code line below is used when URI and predicate also should be stored.
+            //var json = '{"collectedobject":{"uri":"' + tempUri + '", "predicate":"' + tempPredicate + '", "object":"' + tempObject + '", "weight": ' + newWeight + '}}';
+            var json = '{"collectedobject":{"object":"' + tempObject + '", "weight": ' + newWeight + '}}';
             console.log("Update DB: " + json);
             
             var xhrPut = new XMLHttpRequest();

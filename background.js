@@ -1,6 +1,6 @@
 try {
   chrome.tabs.onUpdated.addListener(function(request, changeInfo, tab) {
-    if(changeInfo.url == "chrome://newtab/") {
+    if(changeInfo.url === "chrome://newtab/") {
 
     }
 
