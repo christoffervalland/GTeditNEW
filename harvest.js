@@ -1,4 +1,3 @@
-
 var version = {
    extension: "1.2.0",
    greenTurtle: "1.2.0"
@@ -1079,7 +1078,7 @@ function myDb(object){
    var xhr = new XMLHttpRequest();
    xhr.open("GET", 'https://api.mongolab.com/api/1/databases/semanticuri/collections/objects?q={"collectedobject.object":"' + object + '"}&apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s', true);
    xhr.onload = function(){
-      //console.log("MONGO: " + object);
+   //console.log("MONGO: " + object);
 
       var response = JSON.parse(xhr.responseText);
 
@@ -1089,11 +1088,10 @@ function myDb(object){
          var json = '{"collectedobject":{"object":"' + object + '", "weight": 1}}';
          console.log("Post to DB: " + json);
 
-         var xhrPost = new XMLHttpRequest();
+         var xhrPost = new XMLHttpRequest();            
          xhrPost.open("POST", "https://api.mongolab.com/api/1/databases/semanticuri/collections/objects?apiKey=2P7QlEw29SmcG6BrJ5TZJZZT-eQmd64s");
          xhrPost.setRequestHeader("Content-Type", "application/json");
          xhrPost.send(json);
-
       } else {
          for(var i = 0; i < response.length; i++){
             var newWeight = response[i].collectedobject.weight + 1;
