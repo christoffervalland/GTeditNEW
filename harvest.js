@@ -1593,7 +1593,7 @@ function getTransferSubject(subjects,subject) {
 }
 
 function log(msg) {
-   console.log("Green Turtle: "+msg);
+   console.log("Message: "+msg);
 }
 
 function detectGreenTurtle(waitPeriod,response) {
