@@ -25,28 +25,25 @@ function get_urls() {
     var a = document.getElementsByTagName('A');
     for (var idx= 0; idx < a.length; ++idx){
         urls.push(a[idx].href);
+        postToDb(a[idx].href);
     }
     // Finding frame URLs using window.frames doesn't work since
     // the framed windows haven't been loaded yet.
     if (window.frames.length) {
         var frames = document.getElementsByTagName('FRAME');
         for (var frame, x = 0; frame = frames[x]; x++) {
+            
+            //Calling post URL-method on frames
             urls.push(frame.src);
         }
         var iframes = document.getElementsByTagName('IFRAME');
         for (var frame, x = 0; frame = iframes[x]; x++) {
             urls.push(frame.src);
+
+            //Calling post URL-method on iframes
+            postToDb(frame.src);
         }
     } 
-    
-    /**
-    @author: Christoffer Valland
-    Calling the postToDb-method including the urls found.
-    **/
-    for(var tempUrl in urls){
-        postToDb(urls[tempUrl]);
-    }
-
     return urls;
 }
 /**
